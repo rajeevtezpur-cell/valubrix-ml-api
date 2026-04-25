@@ -1,17 +1,15 @@
-# Use stable Python version (avoids pandas build errors)
-FROM python:3.10-slim
+FROM python:3.10
 
-# Set working directory
+# ✅ Install system dependencies (IMPORTANT)
+RUN apt-get update && apt-get install -y \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Copy all files
 COPY . .
 
-# Upgrade pip
 RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Run training script
 CMD ["python", "train.py"]
